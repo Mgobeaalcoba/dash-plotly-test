@@ -1,4 +1,4 @@
-from dash import Dash, html, dcc, callback, Output, Input
+from dash import Dash, html, dcc, callback, Output, Input, dash_table
 import plotly.express as px
 import pandas as pd
 import certifi
@@ -8,15 +8,45 @@ os.environ['SSL_CERT_FILE'] = certifi.where()
 
 df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminder_unfiltered.csv')
 
-app = Dash()
+# Initialize the app - incorporate css
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+app = Dash(external_stylesheets=external_stylesheets)
+
 
 app.layout = [
-    html.H1(children='My first dash in Plotly Dash', style={'textAlign': 'center'}),
-    dcc.Dropdown(df.country.unique(), 'Canada', id='dropdown-selection'),
-    dcc.Graph(id='graph-content'),
-    dcc.Graph(id='graph-content2'),
-    dcc.Graph(id='graph-content3')
+    html.Div(
+        className='row',
+        children=[
+            'My First App with Data, Graph, and Controls',
+            html.Hr(),
+            html.H2(children='Dataset', style={'textAlign': 'center', 'fontSize': 24}),
+            dash_table.DataTable(data=df.to_dict('records'), page_size=10, style_table={'textAlign': 'center', 'fontSize': 12}),
+        ],
+        style={
+            'textAlign': 'center',
+            'color': 'black',
+            'fontSize': 24
+        }
+    ),
+    html.Hr(),
+    html.Div(
+        className='row',
+        children=[
+            'Select a country:',
+            html.Hr(),
+            dcc.Dropdown(df.country.unique(), 'Canada', id='dropdown-selection'),
+            dcc.Graph(id='graph-content'),
+            dcc.Graph(id='graph-content2'),
+            dcc.Graph(id='graph-content3')
+            ],
+        style={
+            'textAlign': 'center',
+            'fontSize': 24
+        }
+    ),
+    html.Hr(),
 ]
+
 
 
 @callback(
