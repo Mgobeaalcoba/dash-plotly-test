@@ -1,12 +1,18 @@
 from dash import Dash, html, dcc, callback, Output, Input, dash_table
+from repository import Repository
 import plotly.express as px
-import pandas as pd
 import certifi
 import os
 
 os.environ['SSL_CERT_FILE'] = certifi.where()
 
-df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminder_unfiltered.csv')
+repo = Repository()
+
+query = """
+SELECT * FROM meli-sbox.ITLOGINMETRICS.TEST_PLOTLY_APP
+"""
+
+df = repo.get_data(query)
 
 # Initialize the app - incorporate css
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
